@@ -191,7 +191,7 @@ async function enviarPedido(){
     let msg=document.getElementById("msgPedido");
     msg.innerHTML=dados.mensagem || dados.erro;
     msg.className=resposta.status==200 ? "ok":"erro";
-}
+};
 
 listar();
 </script>
