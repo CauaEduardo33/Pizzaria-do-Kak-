@@ -71,8 +71,8 @@ app.post('/pedido', (req, res)=>{
     if(!logado){
         return res.status(400).json({mensagem: 'Você precisa estar logado para realizar o pedido.'});
     }
-    if(!itens_pedido.endereco ){
-        return res.status(400).json({mensagem: 'Você deve inserir o seu endereço.'});
+    if(!itens_pedido.endereco || !itens_pedido.itens ){
+        return res.status(400).json({mensagem: 'Você deve inserir o seu endereço e ao menos um item.'});
     }
 
     return res.status(200).json({mensagem: 'Seu pedido foi registrado!'});
