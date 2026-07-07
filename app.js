@@ -1,6 +1,5 @@
 const express = require('express');
 const app = express();
-const port = 3000;
 
 var logado = false;
 
@@ -78,3 +77,7 @@ app.post('/pedido', (req, res)=>{
 
     return res.status(200).json({mensagem: 'Seu pedido foi registrado!'});
 })
+
+app.listen(3000, () => {
+  console.log('Pizzaria do Kaká rodando em http://localhost:3000');
+});
