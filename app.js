@@ -4,7 +4,7 @@ const app = express();
 var logado = false;
 
 const itens = [
-  // Pizzas
+ 
   { nome: 'Pizza Margherita',      preco: 49.90, tipo: 'pizza' },
   { nome: 'Pizza Calabresa',       preco: 54.90, tipo: 'pizza' },
   { nome: 'Pizza Quatro Queijos',  preco: 59.90, tipo: 'pizza' },
