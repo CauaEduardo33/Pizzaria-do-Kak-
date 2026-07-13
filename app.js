@@ -69,9 +69,9 @@ app.post('/pedido', (req, res)=>{
     const itens_pedido = req.body;
 
     if(!logado){
-        return res.status(400).json({mensagem: 'Você precisa estar logado para realizar o pedido.'});
+        return res.status(401).json({mensagem: 'Você precisa estar logado para realizar o pedido.'});
     }
-    if(!itens_pedido.endereco || !itens_pedido.itens ){
+    if(!itens_pedido.endereco || itens_pedido.itens.length==0 ){
         return res.status(400).json({mensagem: 'Você deve inserir o seu endereço e ao menos um item.'});
     }
 
