@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Pizzaria do Kaká</title>
+
+<style>
+body{
+    font-family: Arial;
+    background:#fff5eb;
+    padding:30px;
+}
+.card{
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    margin-bottom:20px;
+    max-width:700px;
+}
+button{
+    background:#d35400;
+    color:white;
+    border:none;
+    padding:8px 15px;
+    border-radius:5px;
+    cursor:pointer;
+}
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+td,th{
+    border:1px solid #ccc;
+    padding:8px;
+}
+.ok{color:green;}
+.erro{color:red;}
+</style>
+
+</head>
+<body>
+<h1>🍕 Pizzaria do Kaká</h1>
+<div class="card">
+<h2>Login</h2>
+
+<input id="usuario" placeholder="Usuário">
+<input id="senha" type="password" placeholder="Senha">
+
+<button onclick="login()">Entrar</button>
+<p id="msgLogin"></p>
+</div>
+
+<div class="card">
+<h2>Cardápio</h2>
+<select id="tipo">
+
+<option value="">Todos</option>
+<option value="pizza">Pizza</option>
+<option value="sobremesa">Sobremesa</option>
+<option value="porcao">Porção</option>
+<option value="refrigerante">Refrigerante</option>
+<option value="suco">Suco</option>
+
+</select>
+<button onclick="listar()">Buscar</button>
+<table>
+<thead>
+<tr>
+
+<th>Nome</th>
+<th>Preço</th>
+<th></th>
+
+</tr>
+</thead>
+<tbody id="lista"></tbody>
+</table>
+</div>
+
+
+<div class="card">
+
+<h2>Pedido</h2>
+
+<table>
+<thead>
+<tr>
+<th>itens</th>
+<th>Preço</th>
+
+</tr>
+</thead>
+<tbody id="pedido"></tbody>
+</table>
+
+<h3>Total: R$ <span id="total">0.00</span></h3>
+
+<input id="endereco" placeholder="Endereço">
+<button onclick="enviarPedido()">Finalizar Pedido</button>
+
+<p id="msgPedido"></p>
+</div>
+<script>
+
+let cardapio=[];
+let pedido=[];
+
+async function listar(){
+
+    let tipo=document.getElementById("tipo").value;
+
+    let url="/tipos";
+
+    if(tipo!="")
+        url+="?tipo="+tipo;
+
+    let resposta=await fetch(url);
+    cardapio=await resposta.json();
+    let tabela=document.getElementById("lista");
+    tabela.innerHTML="";
+    for(let i=0;i<cardapio.length;i++){
+
+        tabela.innerHTML+=`
+        <tr>
+        <td>${cardapio[i].nome}</td>
+        <td>R$ ${cardapio[i].preco.toFixed(2)}</td>
+        <td>
+        <button onclick="adicionar(${i})">Adicionar</button>
+        </td>
+        </tr>
+        `;
+    }
+}
+function adicionar(indice){
+
+    pedido.push(cardapio[indice]);
+    atualizarPedido();
+
+}
+
+function atualizarPedido(){
+    let tabela=document.getElementById("pedido");
+    tabela.innerHTML="";
+    let total=0;
+    for(let i=0;i<pedido.length;i++){
+
+        tabela.innerHTML+=`
+        <tr>
+        <td>${pedido[i].nome}</td>
+        <td>R$ ${pedido[i].preco.toFixed(2)}</td>
+        </tr>
+        `;
+
+        total+=pedido[i].preco;
+    }
+    document.getElementById("total").innerHTML=total.toFixed(2);
+
+async function login(){
+let resposta=await fetch("/login",{
+
+        method:"POST",
+
+        headers:{
+            "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+            usuario:document.getElementById("usuario").value,
+            senha:document.getElementById("senha").value
+        })
+    });
+
+    let dados=await resposta.json();
+    let msg=document.getElementById("msgLogin");
+    msg.innerHTML=dados.mensagem || dados.erro;
+    msg.className=resposta.status==200 ? "ok":"erro";
+}
+async function enviarPedido(){
+    let resposta=await fetch("/pedido",{
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json"
+        },
+
+        body:JSON.stringify({
+            endereco:document.getElementById("endereco").value,
+            itens:pedido,
+            total:document.getElementById("total").innerHTML
+        })
+    });
+    let dados=await resposta.json();
+    let msg=document.getElementById("msgPedido");
+    msg.innerHTML=dados.mensagem || dados.erro;
+    msg.className=resposta.status==200 ? "ok":"erro";
+};
+
+listar();
+</script>
+</body>
+</html>

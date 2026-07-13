@@ -31,7 +31,7 @@ const SENHA_PADRAO = 'caeve321';
 app.use(express.json());
 
 app.get('/', (req, res)=>{
-    res.sendFile(__dirname + 'public/index.html'); 
+    res.sendFile(__dirname + '/public/index.html'); 
 });
 
 app.get('/tipos', (req, res)=>{
@@ -48,7 +48,7 @@ app.get('/tipos', (req, res)=>{
         if(itens[i].tipo == tipo) filtrados.push(itens[i]);
     }
 
-    return status(200).json(filtrados);
+    return res.status(200).json(filtrados);
 
 
 });
